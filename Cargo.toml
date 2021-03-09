@@ -1,0 +1,21 @@
+[package]
+name = "voxel-benchmark"
+version = "0.1.0"
+authors = ["CodeHz <codehz@outlook.com>"]
+edition = "2018"
+resolver = "2"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+env_logger = "0.8"
+lazy_static = "1.4"
+log = "0.4"
+enum-map = "0.6"
+strum = "0.20"
+strum_macros = "0.20"
+rand = "0.8"
+glam = "0.13"
+image = { version = "0.23", default-features = false, features = ["png"] }
+glium = "0.29"
+anyhow = "1.0"
