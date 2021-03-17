@@ -2,7 +2,11 @@ use std::time::Instant;
 
 use anyhow::Result;
 use enum_map::EnumMap;
-use glium::{backend::Facade, glutin, Frame};
+use glium::{
+    backend::Facade,
+    glutin::{self, event::ElementState},
+    Frame,
+};
 
 use crate::{
     camera::{model_camera::ModelCamera, Camera, CameraCreation, CameraInput},
@@ -110,31 +114,33 @@ pub fn run_renderer<P: RendererProvider>() -> Result<()> {
                     return;
                 }
                 glutin::event::WindowEvent::KeyboardInput { input, .. } => {
-                    match input.virtual_keycode {
-                        Some(glutin::event::VirtualKeyCode::PageUp) => {
-                            world.camera.feed_input(CameraInput::Move([0.0, 1.0, 0.0]));
+                    if input.state == ElementState::Pressed {
+                        match input.virtual_keycode {
+                            Some(glutin::event::VirtualKeyCode::PageUp) => {
+                                world.camera.feed_input(CameraInput::Move([0.0, 1.0, 0.0]));
+                            }
+                            Some(glutin::event::VirtualKeyCode::PageDown) => {
+                                world.camera.feed_input(CameraInput::Move([0.0, -1.0, 0.0]));
+                            }
+                            Some(glutin::event::VirtualKeyCode::Up) => {
+                                world.camera.feed_input(CameraInput::Move([0.0, 0.0, 1.0]));
+                            }
+                            Some(glutin::event::VirtualKeyCode::Down) => {
+                                world.camera.feed_input(CameraInput::Move([0.0, 0.0, -1.0]));
+                            }
+                            Some(glutin::event::VirtualKeyCode::Left) => {
+                                world.camera.feed_input(CameraInput::Move([-1.0, 0.0, 0.0]));
+                            }
+                            Some(glutin::event::VirtualKeyCode::Right) => {
+                                world.camera.feed_input(CameraInput::Move([1.0, 0.0, 0.0]));
+                            }
+                            Some(glutin::event::VirtualKeyCode::Escape) => {
+                                *control_flow = glutin::event_loop::ControlFlow::Exit;
+                                return;
+                            }
+                            Some(_) => {}
+                            None => {}
                         }
-                        Some(glutin::event::VirtualKeyCode::PageDown) => {
-                            world.camera.feed_input(CameraInput::Move([0.0, -1.0, 0.0]));
-                        }
-                        Some(glutin::event::VirtualKeyCode::Up) => {
-                            world.camera.feed_input(CameraInput::Move([0.0, 0.0, 1.0]));
-                        }
-                        Some(glutin::event::VirtualKeyCode::Down) => {
-                            world.camera.feed_input(CameraInput::Move([0.0, 0.0, -1.0]));
-                        }
-                        Some(glutin::event::VirtualKeyCode::Left) => {
-                            world.camera.feed_input(CameraInput::Move([-1.0, 0.0, 0.0]));
-                        }
-                        Some(glutin::event::VirtualKeyCode::Right) => {
-                            world.camera.feed_input(CameraInput::Move([1.0, 0.0, 0.0]));
-                        }
-                        Some(glutin::event::VirtualKeyCode::Escape) => {
-                            *control_flow = glutin::event_loop::ControlFlow::Exit;
-                            return;
-                        }
-                        Some(_) => {}
-                        None => {}
                     }
                 }
                 _ => return,
